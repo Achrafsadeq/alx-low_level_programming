@@ -1,0 +1,1 @@
+This project involves working with variables, if statements, else statements, and while loops in C. It includes a program that assigns a random number to a variable and prints whether the number is positive, negative, or zero.
