@@ -8,42 +8,26 @@
 	*
 	* Return: Always 0 (Success)
 	*/
-
 int main(void)
 {
-	int num1_tens, num1_ones, num2_tens, num2_ones;
+	int i, j;
 
-	for (num1_tens = 0; num1_tens <= 9; num1_tens++)
+	for (i = 0; i < 100; i++)
 	{
-	for (num1_ones = 0; num1_ones <= 9; num1_ones++)
+	for (j = i + 1; j < 100; j++)
 	{
-	for (num2_tens = num1_tens; num2_tens <= 9; num2_tens++)
+	putchar(i / 10 + '0'); /* Print first number's tens digit */
+	putchar(i % 10 + '0'); /* Print first number's ones digit */
+	putchar(' '); /* Print space */
+	putchar(j / 10 + '0'); /* Print second number's tens digit */
+	putchar(j % 10 + '0'); /* Print second number's ones digit */
+	if (i != 98 || j != 99)
 	{
-	/* Start from num1_ones + 1  */
-	int start_num2_ones = (num2_tens == num1_tens) ? num1_ones + 1 : 0;
-
-	for (num2_ones = start_num2_ones; num2_ones <= 9; num2_ones++)
-	{
-	if (!(num1_tens == num2_tens && num1_ones == num2_ones))
-	{
-	putchar(num1_tens + '0');    /* Print first number's tens digit */
-	putchar(num1_ones + '0');    /* Print first number's ones digit */
-	putchar(' ');                /* Print space */
-	putchar(num2_tens + '0');    /* Print second number's tens digit */
-	putchar(num2_ones + '0');    /* Print second number's ones digit */
-
-	if (!(num1_tens == 9 && num1_ones == 9 && num2_tens == 9 && num2_ones == 9))
-	{
-	putchar(',');            /* Print comma */
-	putchar(' ');            /* Print space */
+	putchar(','); /* Print comma */
+	putchar(' '); /* Print space */
 	}
 	}
 	}
-	}
-	}
-	}
-
 	putchar('\n'); /* Print new line after all combinations */
-
 	return (0);
 }
