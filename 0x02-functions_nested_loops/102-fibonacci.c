@@ -7,26 +7,35 @@
  */
 void print_fibonacci(int n)
 {
-	long int fib[n]; /* Array to store Fibonacci numbers */
+	long int fib1 = 1; /* First Fibonacci number */
+	long int fib2 = 2; /* Second Fibonacci number */
+	long int next_fib; /* Variable to calculate the next Fibonacci number */
 	int i;
 
-	/* Initialize the first two Fibonacci numbers */
-	fib[0] = 1;
-	fib[1] = 2;
-
-	/* Calculate the rest of the Fibonacci numbers */
-	for (i = 2; i < n; i++)
+	if (n <= 0)
 	{
-		fib[i] = fib[i - 1] + fib[i - 2];
+		printf("\n");
+		return;
 	}
 
-	/* Print the Fibonacci numbers */
-	for (i = 0; i < n; i++)
+	if (n == 1)
 	{
-		if (i == 0)
-			printf("%ld", fib[i]);
-		else
-			printf(", %ld", fib[i]);
+		printf("%ld\n", fib1);
+		return;
+	}
+
+	/* Print the first two Fibonacci numbers */
+	printf("%ld, %ld", fib1, fib2);
+
+	/* Calculate and print the rest of the Fibonacci numbers */
+	for (i = 3; i <= n; i++)
+	{
+		next_fib = fib1 + fib2;
+		printf(", %ld", next_fib);
+
+		/* Update the previous two Fibonacci numbers */
+		fib1 = fib2;
+		fib2 = next_fib;
 	}
 
 	printf("\n"); /* Print a new line at the end */
@@ -42,5 +51,5 @@ int main(void)
 	/* Call the function to print the first 50 Fibonacci numbers */
 	print_fibonacci(50);
 
-	return (0);
+	return (0); /* Return 0 to indicate success */
 }
