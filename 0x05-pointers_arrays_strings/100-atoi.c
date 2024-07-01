@@ -2,32 +2,39 @@
 
 /**
  * _atoi - converts a string to an integer
- * @s: the string to convert
- *
- * Description: Parses string, handles signs, converts digits to integer value.
- * Return: the converted integer
+ * @s: string input parameter
+ * Return: converted integer from string
  */
+
 int _atoi(char *s)
 {
+	/* Initialize variables */
+	unsigned int num = 0;
 	int sign = 1;
-	int result = 0;
-	int i = 0;
+	int found_num = 0;
 
-	while (s[i] != '\0')
+	/* Traverse the string */
+	while (*s)
 	{
-		if (s[i] == '-')
+		/* Check for sign */
+		if (*s == '-' && !found_num)
 		{
-			sign = sign * -1;
+			sign *= -1;
 		}
-		else if (s[i] >= '0' && s[i] <= '9')
+		/* Check for digits and convert */
+		else if (*s >= '0' && *s <= '9')
 		{
-			result = result * 10 + (s[i] - '0');
+			found_num = 1; /* Mark that we've found a number */
+			num = (num * 10) + (*s - '0');
 		}
-		else if (result != 0)
+		/* Break if non-digit character found after a number */
+		else if (found_num)
 		{
 			break;
 		}
-		i++;
+		s++;
 	}
-	return (result * sign);
+
+	/* Return the result with the correct sign */
+	return (num * sign);
 }
