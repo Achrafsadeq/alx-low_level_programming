@@ -6,17 +6,29 @@
  */
 void print_number(int n)
 {
-	/* Handle negative numbers */
+	unsigned int num;
+	int divisor = 1;
+
 	if (n < 0)
 	{
 		_putchar('-');
-		n = -n; /* Convert to positive */
+		num = -n;
+	}
+	else
+	{
+		num = n;
 	}
 
-	/* Recursive call to handle all digits before the last one */
-	if (n / 10)
-		print_number(n / 10);
+	/* Find the largest power of 10 less than or equal to num */
+	while (num / divisor >= 10)
+	{
+		divisor *= 10;
+	}
 
-	/* Print the last digit */
-	_putchar(n % 10 + '0');
+	/* Print each digit */
+	while (divisor != 0)
+	{
+		_putchar((num / divisor) % 10 + '0');
+		divisor /= 10;
+	}
 }
