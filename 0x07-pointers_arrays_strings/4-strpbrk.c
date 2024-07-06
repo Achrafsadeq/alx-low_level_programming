@@ -2,29 +2,24 @@
 
 /**
  * _strpbrk - searches a string for any of a set of bytes
- * @s: the string to search
- * @accept: the set of bytes to search for
+ * @str: the string to search
+ * @chars: the set of bytes to search for
  *
- * Return: pointer to the byte in s that matches one of the bytes in accept,
- *         or NULL if no such byte is found
+ * Return: a pointer to the byte in str that matches one of the bytes in chars,
+ * or NULL if no such byte is found
  */
-char *_strpbrk(char *s, char *accept)
+char *_strpbrk(char *str, char *chars)
 {
-	int i, j;
+	int str_index, chars_index;
 
-	/* Loop through each character in the string s */
-	for (i = 0; s[i] != '\0'; i++)
+	for (str_index = 0; str[str_index] != '\0'; str_index++)
 	{
-		/* Check if current character in s matches any in accept */
-		for (j = 0; accept[j] != '\0'; j++)
+		for (chars_index = 0; chars[chars_index] != '\0'; chars_index++)
 		{
-			if (s[i] == accept[j])
-			{
-				/* Return pointer to the matching byte in s */
-				return (s + i);
-			}
+			if (str[str_index] == chars[chars_index])
+				return (&str[str_index]);
 		}
 	}
-	/* Return NULL if no matching byte is found */
+
 	return (NULL);
 }
