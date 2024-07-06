@@ -10,22 +10,19 @@
  */
 void print_diagsums(int *a, int size)
 {
-	int i = 0;
 	int mdi = 0;
 	int sdi = 0;
 
-	while (i < size)
+	for (int i = 0; i < size; i++)
 	{
 		/* Add the value of the main diagonal element */
 		mdi += a[i * size + i];
 
-		/* Check if the current element is not on the secondary diagonal*/
+		/* Check if the current element is not on the secondary diagonal */
 		if (i != (size - 1 - i))
 		{
 			sdi += a[i * size + (size - 1 - i)];
 		}
-
-		i++;
 	}
 	printf("%d, %d\n", mdi, sdi);
 }
