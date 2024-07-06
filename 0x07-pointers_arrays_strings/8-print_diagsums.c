@@ -19,7 +19,8 @@ void print_diagsums(int *a, int size)
 		/* Add the value of the main diagonal element */
 		mdi += a[i * size + i];
 
-		/* Check if the current element is not on the secondary diagonal
+		/*
+		 * Check if the current element is not on the secondary diagonal
 		 * before adding it to the secondary diagonal sum
 		 */
 		if (i != (size - 1 - i))
@@ -29,6 +30,5 @@ void print_diagsums(int *a, int size)
 
 		i++;
 	}
-
 	printf("%d, %d\n", mdi, sdi);
 }
