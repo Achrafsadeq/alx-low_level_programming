@@ -4,17 +4,16 @@
  * _puts_recursion - Prints a string, followed by a new line.
  * @s: The string to be printed.
  *
- * Description: Uses a while loop to print each character of the string,
- * followed by a newline character.
+ * Description: Recursively prints each character of a string
+ * followed by a new line.
  */
 void _puts_recursion(char *s)
 {
-	int i = 0;
-
-	while (s[i] != '\0')
+	if (*s == '\0')
 	{
-		_putchar(s[i]);
-		i++;
+		_putchar('\n');
+		return; /* End of string reached */
 	}
-	_putchar('\n');
+	_putchar(*s); /* Print current character */
+	_puts_recursion(s + 1); /* Recursive call with next character */
 }
