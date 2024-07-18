@@ -1,170 +1,116 @@
-#include "main.h"
 #include <stdlib.h>
 #include <stdio.h>
-
-int get_length(char *str);
-int *allocate_result(int len1, int len2);
-void perform_multiplication(char *num1, char *num2, int *result,
-		int len1, int len2);
-char *create_result_string(int *result, int len1, int len2);
+#include "main.h"
 
 /**
- * main - multiplies two positive numbers
- * @argc: number of arguments
- * @argv: array of arguments
- * Return: 0 on success, 98 on failure
+ * is_number - checks if a string contains a non-digit char
+ * @str: string to be evaluated
+ *
+ * Return: 0 if a non-digit is found, 1 otherwise
  */
-int main(int argc, char *argv[])
+int is_number(char *str)
 {
-	char *result;
+	int index;
 
-	if (argc != 3)
+	for (index = 0; str[index] != '\0'; index++)
 	{
-		printf("Error\n");
-		exit(98);
-	}
-
-	if (!is_digit(argv[1]) || !is_digit(argv[2]))
-	{
-		printf("Error\n");
-		exit(98);
-	}
-
-	result = multiply(argv[1], argv[2]);
-	print_number(atoi(result));
-	_putchar('\n');
-	free(result);
-
-	return (0);
-}
-
-/**
- * is_digit - checks if a string contains only digits
- * @s: string to check
- * Return: 1 if only digits, 0 otherwise
- */
-int is_digit(char *s)
-{
-	while (*s)
-	{
-		if (*s < '0' || *s > '9')
+		if (str[index] < '0' || str[index] > '9')
 			return (0);
-		s++;
 	}
 	return (1);
 }
 
 /**
- * print_number - prints an unsigned long integer
- * @n: number to print
+ * string_length - returns the length of a string
+ * @str: string to evaluate
+ *
+ * Return: the length of the string
  */
-void print_number(unsigned long n)
+int string_length(char *str)
 {
-	if (n / 10)
-		print_number(n / 10);
-	_putchar((n % 10) + '0');
+	int length = 0;
+
+	while (str[length] != '\0')
+		length++;
+	return (length);
 }
 
 /**
- * multiply - multiplies two numbers represented as strings
+ * handle_errors - handles errors for main
+ */
+void handle_errors(void)
+{
+	printf("Error\n");
+	exit(98);
+}
+
+/**
+ * multiply - multiplies two numbers
  * @num1: first number
  * @num2: second number
- * Return: result as a string
+ * @len1: length of num1
+ * @len2: length of num2
  */
-char *multiply(char *num1, char *num2)
+void multiply(char *num1, char *num2, int len1, int len2)
 {
-	int len1, len2;
-	int *result;
-	char *str_result;
+	int i, j, carry, digit1, digit2, *result, total_len;
+	int started = 0;
 
-	len1 = get_length(num1);
-	len2 = get_length(num2);
-
-	result = allocate_result(len1, len2);
-	perform_multiplication(num1, num2, result, len1, len2);
-	str_result = create_result_string(result, len1, len2);
-
-	free(result);
-	return (str_result);
-}
-
-/**
- * get_length - gets the length of a string
- * @str: string to measure
- * Return: length of string
- */
-int get_length(char *str)
-{
-	int len = 0;
-
-	while (str[len])
-		len++;
-	return (len);
-}
-
-/**
- * allocate_result - allocates memory for result array
- * @len1: length of first number
- * @len2: length of second number
- * Return: pointer to allocated memory
- */
-int *allocate_result(int len1, int len2)
-{
-	int *result = calloc(len1 + len2, sizeof(int));
-
+	total_len = len1 + len2;
+	result = calloc(total_len, sizeof(int));
 	if (!result)
-		exit(98);
-	return (result);
-}
-
-/**
- * perform_multiplication - performs the multiplication of two numbers
- * @num1: first number
- * @num2: second number
- * @result: array to store the result
- * @len1: length of first number
- * @len2: length of second number
- */
-void perform_multiplication(char *num1, char *num2, int *result,
-		int len1, int len2)
-{
-	int i, j, n1, n2, sum;
+		handle_errors();
 
 	for (i = len1 - 1; i >= 0; i--)
 	{
+		carry = 0;
+		digit1 = num1[i] - '0';
 		for (j = len2 - 1; j >= 0; j--)
 		{
-			n1 = num1[i] - '0';
-			n2 = num2[j] - '0';
-			sum = result[i + j + 1] + (n1 * n2);
-			result[i + j + 1] = sum % 10;
-			result[i + j] += sum / 10;
+			digit2 = num2[j] - '0';
+			carry += result[i + j + 1] + (digit1 * digit2);
+			result[i + j + 1] = carry % 10;
+			carry /= 10;
 		}
+		if (carry > 0)
+			result[i + j + 1] += carry;
 	}
+
+	for (i = 0; i < total_len; i++)
+	{
+		if (result[i])
+			started = 1;
+		if (started)
+			_putchar(result[i] + '0');
+	}
+	if (!started)
+		_putchar('0');
+	_putchar('\n');
+
+	free(result);
 }
 
 /**
- * create_result_string - creates a string from the result array
- * @result: array containing the result
- * @len1: length of first number
- * @len2: length of second number
- * Return: result as a string
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ *
+ * Return: always 0 (Success)
  */
-char *create_result_string(int *result, int len1, int len2)
+int main(int argc, char *argv[])
 {
-	char *str_result;
-	int i = 0, j = 0;
+	char *num1, *num2;
+	int len1, len2;
 
-	str_result = malloc(len1 + len2 + 1);
-	if (!str_result)
-		exit(98);
+	if (argc != 3 || !is_number(argv[1]) || !is_number(argv[2]))
+		handle_errors();
 
-	while (i < len1 + len2 && result[i] == 0)
-		i++;
+	num1 = argv[1];
+	num2 = argv[2];
+	len1 = string_length(num1);
+	len2 = string_length(num2);
 
-	while (i < len1 + len2)
-		str_result[j++] = result[i++] + '0';
-	str_result[j] = '\0';
+	multiply(num1, num2, len1, len2);
 
-	return (str_result);
+	return (0);
 }
