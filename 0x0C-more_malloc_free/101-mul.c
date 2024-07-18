@@ -1,154 +1,170 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "main.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-/* Function prototypes */
-int _putchar(char c);
-void print_error(void);
-int is_digit_string(char *str);
-int _strlen(char *s);
-char *multiply_strings(char *num1, char *num2);
+int get_length(char *str);
+int *allocate_result(int len1, int len2);
+void perform_multiplication(char *num1, char *num2, int *result,
+		int len1, int len2);
+char *create_result_string(int *result, int len1, int len2);
 
 /**
- * main - Entry point
- * @argc: Argument count
- * @argv: Argument vector
- *
- * Return: Always 0 (Success)
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ * Return: 0 on success, 98 on failure
  */
 int main(int argc, char *argv[])
 {
 	char *result;
 
-	/* Validate number of arguments */
 	if (argc != 3)
 	{
-		print_error();
-		return (98);
+		printf("Error\n");
+		exit(98);
 	}
 
-	/* Validate arguments are digits */
-	if (!is_digit_string(argv[1]) || !is_digit_string(argv[2]))
+	if (!is_digit(argv[1]) || !is_digit(argv[2]))
 	{
-		print_error();
-		return (98);
+		printf("Error\n");
+		exit(98);
 	}
 
-	/* Perform multiplication */
-	result = multiply_strings(argv[1], argv[2]);
-	if (result == NULL)
-	{
-		print_error();
-		return (98);
-	}
-
-	/* Print the result */
-	while (*result == '0' && *(result + 1) != '\0')
-		result++;
-	while (*result != '\0')
-	{
-		_putchar(*result);
-		result++;
-	}
+	result = multiply(argv[1], argv[2]);
+	print_number(atoi(result));
 	_putchar('\n');
-
-	/* Free dynamically allocated memory */
 	free(result);
 
 	return (0);
 }
 
 /**
- * print_error - Prints "Error" followed by a new line to stdout
+ * is_digit - checks if a string contains only digits
+ * @s: string to check
+ * Return: 1 if only digits, 0 otherwise
  */
-void print_error(void)
+int is_digit(char *s)
 {
-	char *error = "Error\n";
-
-	while (*error != '\0')
+	while (*s)
 	{
-		_putchar(*error);
-		error++;
-	}
-}
-
-/**
- * is_digit_string - Checks if a string contains only digits
- * @str: The string to check
- *
- * Return: 1 if all characters are digits, 0 otherwise
- */
-int is_digit_string(char *str)
-{
-	while (*str)
-	{
-		if (*str < '0' || *str > '9')
+		if (*s < '0' || *s > '9')
 			return (0);
-		str++;
+		s++;
 	}
 	return (1);
 }
 
 /**
- * _strlen - Returns the length of a string
- * @s: The string to measure
- *
- * Return: The length of the string
+ * print_number - prints an unsigned long integer
+ * @n: number to print
  */
-int _strlen(char *s)
+void print_number(unsigned long n)
+{
+	if (n / 10)
+		print_number(n / 10);
+	_putchar((n % 10) + '0');
+}
+
+/**
+ * multiply - multiplies two numbers represented as strings
+ * @num1: first number
+ * @num2: second number
+ * Return: result as a string
+ */
+char *multiply(char *num1, char *num2)
+{
+	int len1, len2;
+	int *result;
+	char *str_result;
+
+	len1 = get_length(num1);
+	len2 = get_length(num2);
+
+	result = allocate_result(len1, len2);
+	perform_multiplication(num1, num2, result, len1, len2);
+	str_result = create_result_string(result, len1, len2);
+
+	free(result);
+	return (str_result);
+}
+
+/**
+ * get_length - gets the length of a string
+ * @str: string to measure
+ * Return: length of string
+ */
+int get_length(char *str)
 {
 	int len = 0;
 
-	while (*s++)
+	while (str[len])
 		len++;
 	return (len);
 }
 
 /**
- * multiply_strings - Multiplies two strings representing numbers
- * @num1: The first number as a string
- * @num2: The second number as a string
- *
- * Return: Pointer to the result of the multiplication as a string
+ * allocate_result - allocates memory for result array
+ * @len1: length of first number
+ * @len2: length of second number
+ * Return: pointer to allocated memory
  */
-char *multiply_strings(char *num1, char *num2)
+int *allocate_result(int len1, int len2)
 {
-	int len1 = _strlen(num1);
-	int len2 = _strlen(num2);
-	int len_result = len1 + len2;
-	int *result;
-	int i, j, carry, digit;
+	int *result = calloc(len1 + len2, sizeof(int));
 
-	result = calloc(len_result, sizeof(int));
-	if (result == NULL)
-		return (NULL);
+	if (!result)
+		exit(98);
+	return (result);
+}
 
-	/* Perform multiplication digit by digit */
+/**
+ * perform_multiplication - performs the multiplication of two numbers
+ * @num1: first number
+ * @num2: second number
+ * @result: array to store the result
+ * @len1: length of first number
+ * @len2: length of second number
+ */
+void perform_multiplication(char *num1, char *num2, int *result,
+		int len1, int len2)
+{
+	int i, j, n1, n2, sum;
+
 	for (i = len1 - 1; i >= 0; i--)
 	{
-		carry = 0;
 		for (j = len2 - 1; j >= 0; j--)
 		{
-			digit = (num1[i] - '0') * (num2[j] - '0') + result[i + j + 1] + carry;
-			carry = digit / 10;
-			result[i + j + 1] = digit % 10;
+			n1 = num1[i] - '0';
+			n2 = num2[j] - '0';
+			sum = result[i + j + 1] + (n1 * n2);
+			result[i + j + 1] = sum % 10;
+			result[i + j] += sum / 10;
 		}
-		result[i + j + 1] += carry; /* Leftmost carry */
 	}
+}
 
-	/* Convert result to string */
-	char *result_str = malloc((len_result + 1) * sizeof(char));
+/**
+ * create_result_string - creates a string from the result array
+ * @result: array containing the result
+ * @len1: length of first number
+ * @len2: length of second number
+ * Return: result as a string
+ */
+char *create_result_string(int *result, int len1, int len2)
+{
+	char *str_result;
+	int i = 0, j = 0;
 
-	if (result_str == NULL)
-	{
-		free(result);
-		return (NULL);
-	}
-	for (i = 0; i < len_result; i++)
-		result_str[i] = result[i] + '0';
-	result_str[len_result] = '\0';
+	str_result = malloc(len1 + len2 + 1);
+	if (!str_result)
+		exit(98);
 
-	free(result);
+	while (i < len1 + len2 && result[i] == 0)
+		i++;
 
-	return (result_str);
+	while (i < len1 + len2)
+		str_result[j++] = result[i++] + '0';
+	str_result[j] = '\0';
+
+	return (str_result);
 }
