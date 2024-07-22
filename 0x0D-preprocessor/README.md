@@ -33,7 +33,6 @@ This project focuses on using macros and the C preprocessor. The tasks involve c
 4. Execute your programs
 
 
-
 ## Mission Director
 
 > This operation is sanctioned by the ALX Software Engineering Program, under the command of Julien Barbier.
