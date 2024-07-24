@@ -2,15 +2,15 @@
 #include <stdlib.h>
 
 /**
- * execute_on_array - Executes a function given as a parameter
- *                    on each item of an array.
+ * array_iterator - Executes a function given as a parameter
+ *                  on each item of an array.
  * @array: The array of integers.
  * @size: The size of the array.
  * @action: A pointer to the function to be applied to each item.
  *
  * Return: Nothing.
  */
-void execute_on_array(int *array, size_t size, void (*action)(int))
+void array_iterator(int *array, size_t size, void (*action)(int))
 {
 	size_t index;
 
