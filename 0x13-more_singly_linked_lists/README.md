@@ -1,6 +1,4 @@
-0x13. C - More Singly Linked Lists
-————————————————————
- # 0x13. C - More Singly Linked Lists
+# 0x13. C - More Singly Linked Lists
 
 ## Description
 This project involves working with more advanced concepts of singly linked lists in C. It covers various tasks such as adding, deleting, and reversing linked lists, as well as performing specific operations on list elements.
