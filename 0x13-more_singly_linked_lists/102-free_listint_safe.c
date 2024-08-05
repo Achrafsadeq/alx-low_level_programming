@@ -1,55 +1,51 @@
 #include "lists.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 /**
- * free_listint_safe - Frees a listint_t linked list safely (handles loops).
- * @h: Double pointer to the head of the list.
+ * free_listint_safe - Frees a listint_t list safely
+ *                      (can free lists with a loop)
+ * @h: Pointer to the pointer of the start of the list
  *
- * Description: Frees a listint_t list and sets the head to NULL. This function
- *             also handles potential loops within the list by storing pointers
- *             to each node and checking for repeats.
+ * Description: This function can free lists with a loop
+ *              the list should go though the list only once
+ *              The function sets the head to NULL
  *
- * Return: The size of the list that was freed.
+ * Return: The size of the list that was freed
  */
 size_t free_listint_safe(listint_t **h)
 {
 	size_t count = 0;
-	listint_t **array;
-	unsigned int i = 0;
-	unsigned int flag = 0;
+	listint_t **current;
+	unsigned int temp = 0;
+	unsigned int diff = 0;
 
-	array = malloc(sizeof(listint_t *) * 1024);
-	if (!array)
+	current = malloc(sizeof(listint_t *) * 1024);
+	if (!current)
 		exit(98);
-
 	while (*h != NULL)
 	{
 		/* Check if the current node has already been encountered */
-		for (i = 0; i < count; i++)
+		for (temp = 0; temp < count; temp++)
 		{
-			if (*h == array[i])
+			if (*h == current[temp])
 			{
-				flag = 1;
+				diff = 1;
 				break;
 			}
 		}
-		if (flag == 1)
+		if (diff == 1)
 			break;
-
 		/* Store the pointer to the current node */
-		array[count] = *h;
+		current[count] = *h;
 		*h = (*h)->next;
 		count++;
 	}
-
 	/* Free all the nodes in the list */
-	for (i = 0; i < count; i++)
+	for (temp = 0; temp < count; temp++)
 	{
-		free(array[i]);
+		free(current[temp]);
 	}
-	free(array);
-
+	free(current);
 	/* Set the head to NULL */
 	*h = NULL;
 	return (count);
