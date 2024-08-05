@@ -12,7 +12,7 @@ size_t print_listint(const listint_t *h)
 	/* Initialize node counter */
 	size_t node_count = 0;
 
-	while (h != NULL)
+	while (h)
 	{
 		/* Print the value of the current node */
 		printf("%d\n", h->n);
