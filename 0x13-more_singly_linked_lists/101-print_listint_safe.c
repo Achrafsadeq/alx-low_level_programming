@@ -1,42 +1,43 @@
 #include "lists.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 /**
- * print_listint_safe - Prints a linked list with a loop safely.
- * @head: Pointer to the first node of the linked list.
- *
- * Return: The number of nodes in the list.
+ * print_listint_safe - function that prints a linked list with a loop safely.
+ * @head: pointer to the 1st node of the linked list
+ * Return: the number of nodes in the list
  */
 size_t print_listint_safe(const listint_t *head)
 {
-	const listint_t *tmp_n = head;
-	const listint_t *l_n;
-	size_t counter = 0;
-	size_t new_n;
+	const listint_t *current = head;
+	const listint_t *check;
+	size_t count = 0;
+	size_t position;
 
-	while (tmp_n)
+	while (current)
 	{
-		printf("[%p] %d\n", (void *)tmp_n, tmp_n->n);
-		counter++;
-		tmp_n = tmp_n->next;
-
-		l_n = head;
-		new_n = 0;
-		while (new_n < counter)
+		/* Print the current node's address and value */
+		printf("[%p] %d\n", (void *)current, current->n);
+		count++;
+		current = current->next;
+		/* Reset check pointer to head for each iteration */
+		check = head;
+		position = 0;
+		/* Check if we've encountered a loop */
+		while (position < count)
 		{
-			if (tmp_n == l_n)
+			if (current == check)
 			{
-				printf("-> [%p] %d\n", (void *)tmp_n, tmp_n->n);
-				return (counter);
+				/* We've found a loop, print the looping node and return */
+				printf("-> [%p] %d\n", (void *)current, current->n);
+				return (count);
 			}
-			l_n = l_n->next;
-			new_n++;
+			check = check->next;
+			position++;
 		}
-
+		/* If head becomes NULL, exit with status code 98 */
 		if (!head)
 			exit(98);
 	}
-	return (counter);
+	/* Return the total number of nodes if no loop is found */
+	return (count);
 }
-
