@@ -1,40 +1,41 @@
+#include <stdlib.h>
 #include "lists.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdlib.h>
-/**
- * free_listint_safe - Frees a listint_t list safely (can handle loops).
- * @h: Pointer to the pointer to the head of the linked list.
- *
- * Return: The size of the list that was freed.
- */
 
+/**
+ * free_listint_safe - Frees a listint_t list safely (can free lists with a loop)
+ * @h: Pointer to the pointer of the start of the list
+ *
+ * Return: The size of the list that was freed
+ */
 size_t free_listint_safe(listint_t **h)
 {
-	listint_t *current, *next;
-	size_t nodes = 0;
+    size_t len = 0;
+    int diff;
+    listint_t *temp;
 
-	/* Check if the list is empty */
-	if (h == NULL || *h == NULL)
-		return (0);
+    if (!h || !*h)
+        return (0);
 
-	current = *h;
+    while (*h)
+    {
+        diff = *h - (*h)->next;
+        if (diff > 0)
+        {
+            temp = (*h)->next;
+            free(*h);
+            *h = temp;
+            len++;
+        }
+        else
+        {
+            free(*h);
+            *h = NULL;
+            len++;
+            break;
+        }
+    }
 
-	while (current != NULL)
-	{
-		next = current->next;
-		free(current);
-		nodes++;
+    *h = NULL;
 
-		/* Break the loop if a cycle is detected */
-		if (current <= next)
-			break;
-
-		current = next;
-	}
-
-	/* Set the head to NULL to indicate the list is empty */
-	*h = NULL;
-
-	return (nodes);
+    return (len);
 }
