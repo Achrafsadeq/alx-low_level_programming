@@ -1,6 +1,4 @@
 #include "lists.h"
-#include <stdio.h>
-#include <stdlib.h>
 /**
  * free_listint_safe - Frees a listint_t list safely
  *                      (can free lists with a loop)
