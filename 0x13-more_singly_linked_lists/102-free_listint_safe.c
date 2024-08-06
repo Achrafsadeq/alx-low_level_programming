@@ -4,7 +4,7 @@
 
 /**
  * free_listint_safe - Frees a listint_t list safely
- *                      (can free lists with a loop)
+ *                     (can free lists with a loop)
  * @h: Pointer to the pointer of the start of the list
  *
  * Description: This function can free lists with a loop
