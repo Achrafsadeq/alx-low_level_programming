@@ -1,45 +1,37 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-void verify_args(int arg_count);
-void validate_source(ssize_t result, char *source, int src_fd, int dest_fd);
-void validate_destination(ssize_t result, char *destination, int src_fd,
-		int dest_fd);
-void verify_close(int result, int fd);
+
 /**
- * verify_args - ensures the correct number
- * of command-line arguments are provided.
- * @arg_count: total number of command-line arguments.
+ * check_args - checks for the correct number of arguments.
+ * @argc: number of arguments.
  *
  * Return: void.
  */
-void verify_args(int arg_count)
+void check_args(int argc)
 {
-	if (arg_count != 3)
+	if (argc != 3)
 	{
-		dprintf(STDERR_FILENO,
-			"Usage: cp source_file destination_file\n");
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
 		exit(97);
 	}
 }
 
 /**
- * validate_source - verifies if the source file can be read.
- * @result: result from the read operation.
- * @source: name of the source file.
- * @src_fd: file descriptor for the source file, or -1.
- * @dest_fd: file descriptor for the destination file, or -1.
+ * check_read - checks if reading from the source file was successful.
+ * @result: result of the read operation.
+ * @file: name of the source file.
+ * @src_fd: file descriptor of the source file.
+ * @dest_fd: file descriptor of the destination file.
  *
  * Return: void.
  */
-void validate_source(ssize_t result, char *source, int src_fd, int dest_fd)
+void check_read(ssize_t result, char *file, int src_fd, int dest_fd)
 {
 	if (result == -1)
 	{
-		dprintf(STDERR_FILENO,
-			"Error: Unable to read from file %s\n", source);
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file);
 		if (src_fd != -1)
 			close(src_fd);
 		if (dest_fd != -1)
@@ -49,22 +41,19 @@ void validate_source(ssize_t result, char *source, int src_fd, int dest_fd)
 }
 
 /**
- * validate_destination - ensures the destination file
- * can be written to or created.
- * @result: result from the write operation.
- * @destination: name of the destination file.
- * @src_fd: file descriptor for the source file, or -1.
- * @dest_fd: file descriptor for the destination file, or -1.
+ * check_write - checks if writing to the destination file was successful.
+ * @result: result of the write operation.
+ * @file: name of the destination file.
+ * @src_fd: file descriptor of the source file.
+ * @dest_fd: file descriptor of the destination file.
  *
  * Return: void.
  */
-void validate_destination(ssize_t result, char *destination, int src_fd,
-		int dest_fd)
+void check_write(ssize_t result, char *file, int src_fd, int dest_fd)
 {
 	if (result == -1)
 	{
-		dprintf(STDERR_FILENO,
-			"Error: Unable to write to %s\n", destination);
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file);
 		if (src_fd != -1)
 			close(src_fd);
 		if (dest_fd != -1)
@@ -74,60 +63,59 @@ void validate_destination(ssize_t result, char *destination, int src_fd,
 }
 
 /**
- * verify_close - confirms file descriptors are closed properly.
+ * check_close - checks if closing a file descriptor was successful.
  * @result: result of the close operation.
  * @fd: file descriptor.
  *
  * Return: void.
  */
-void verify_close(int result, int fd)
+void check_close(int result, int fd)
 {
 	if (result == -1)
 	{
-		dprintf(STDERR_FILENO,
-			"Error: Unable to close fd %d\n", fd);
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
 		exit(100);
 	}
 }
 
 /**
- * main - copies contents from one file to another.
- * @arg_count: number of command-line arguments.
- * @arg_values: array of argument strings.
+ * main - copies the content of a file to another file.
+ * @argc: number of arguments passed.
+ * @argv: array of argument strings.
  *
- * Return: 0 on successful execution.
+ * Return: 0 on success.
  */
-int main(int arg_count, char *arg_values[])
+int main(int argc, char *argv[])
 {
 	int src_fd, dest_fd;
 	ssize_t bytes_read, bytes_written;
 	char buffer[1024];
 	mode_t permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
 
-	/* Verify argument count */
-	verify_args(arg_count);
+	/* Check the number of arguments */
+	check_args(argc);
 
-	/* Open source file */
-	src_fd = open(arg_values[1], O_RDONLY);
-	validate_source((ssize_t)src_fd, arg_values[1], -1, -1);
+	/* Open the source file */
+	src_fd = open(argv[1], O_RDONLY);
+	check_read((ssize_t)src_fd, argv[1], -1, -1);
 
-	/* Open destination file */
-	dest_fd = open(arg_values[2], O_WRONLY | O_CREAT | O_TRUNC, permissions);
-	validate_destination((ssize_t)dest_fd, arg_values[2], src_fd, -1);
+	/* Open the destination file */
+	dest_fd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, permissions);
+	check_write((ssize_t)dest_fd, argv[2], src_fd, -1);
 
-	/* Transfer data from source to destination */
+	/* Copy the content from source to destination */
 	while ((bytes_read = read(src_fd, buffer, sizeof(buffer))) > 0)
 	{
 		bytes_written = write(dest_fd, buffer, bytes_read);
-		validate_destination(bytes_written, arg_values[2], src_fd, dest_fd);
+		check_write(bytes_written, argv[2], src_fd, dest_fd);
 	}
 
 	/* Check for read errors */
-	validate_source(bytes_read, arg_values[1], src_fd, dest_fd);
+	check_read(bytes_read, argv[1], src_fd, dest_fd);
 
 	/* Close file descriptors */
-	verify_close(close(dest_fd), dest_fd);
-	verify_close(close(src_fd), src_fd);
+	check_close(close(dest_fd), dest_fd);
+	check_close(close(src_fd), src_fd);
 
 	return (0);
 }
