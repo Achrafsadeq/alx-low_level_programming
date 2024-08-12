@@ -3,7 +3,11 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+void verify_args(int arg_count);
+void validate_source(ssize_t result, char *source, int src_fd, int dest_fd);
+void validate_destination(ssize_t result, char *destination, int src_fd,
+		int dest_fd);
+void verify_close(int result, int fd);
 /**
  * verify_args - ensures the correct number
  * of command-line arguments are provided.
