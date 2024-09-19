@@ -17,7 +17,7 @@ This project dives into the implementation and manipulation of doubly linked lis
 | **Functions per File**| No more than 5 functions per file                                  |
 | **Allowed C Library Functions**| Only malloc, free, printf, and exit are allowed           |
 
-### C Coding Guidelines
+### Coding Guidelines
 - The prototypes of all functions should be included in the header file `lists.h`.
 - Header files must be include guarded.
 - All functions must handle the necessary edge cases, such as NULL input or empty lists.
