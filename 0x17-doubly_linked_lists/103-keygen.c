@@ -3,43 +3,51 @@
 #include <stdlib.h>
 
 /**
- * main - generate a key depending on a username for crackme5
- * @argc: number of arguments passed
- * @argv: arguments passed to main
+ * main - Create a unique key based on the provided username for crackme5
+ * @argc: The count of command-line arguments
+ * @argv: Array containing the command-line arguments
  *
- * Return: 0 on success, 1 on error
+ * Return: 0 if successful, or 1 if an error occurs
  */
 int main(int argc, char *argv[])
 {
-	unsigned int i, b;
-	size_t len, add;
+	unsigned int index, multiplier;
+	size_t len, sum;
 	char *l = "A-CHRDw87lNS0E9B2TibgpnMVys5XzvtOGJcYLU+4mjW6fxqZeF3Qa1rPhdKIouk";
-	char p[7] = "      ";
+	char key[7] = " ";
 
 	if (argc != 2)
 	{
-		printf("Correct usage: ./keygen5 username\n");
+		printf("Usage: ./keygen5 username\n");
 		return (1);
 	}
+
 	len = strlen(argv[1]);
-	p[0] = l[(len ^ 59) & 63];
-	for (i = 0, add = 0; i < len; i++)
-		add += argv[1][i];
-	p[1] = l[(add ^ 79) & 63];
-	for (i = 0, b = 1; i < len; i++)
-		b *= argv[1][i];
-	p[2] = l[(b ^ 85) & 63];
-	for (b = argv[1][0], i = 0; i < len; i++)
-		if ((char)b <= argv[1][i])
-			b = argv[1][i];
-	srand(b ^ 14);
-	p[3] = l[rand() & 63];
-	for (b = 0, i = 0; i < len; i++)
-		b += argv[1][i] * argv[1][i];
-	p[4] = l[(b ^ 239) & 63];
-	for (b = 0, i = 0; (char)i < argv[1][0]; i++)
-		b = rand();
-	p[5] = l[(b ^ 229) & 63];
-	printf("%s\n", p);
+	key[0] = l[(len ^ 59) & 63];
+
+	for (index = 0, sum = 0; index < len; index++)
+		sum += argv[1][index];
+	key[1] = l[(sum ^ 79) & 63];
+
+	for (index = 0, multiplier = 1; index < len; index++)
+		multiplier *= argv[1][index];
+	key[2] = l[(multiplier ^ 85) & 63];
+
+	for (multiplier = argv[1][0], index = 0; index < len; index++)
+		if ((char)multiplier <= argv[1][index])
+			multiplier = argv[1][index];
+
+	srand(multiplier ^ 14);
+	key[3] = l[rand() & 63];
+
+	for (multiplier = 0, index = 0; index < len; index++)
+		multiplier += argv[1][index] * argv[1][index];
+	key[4] = l[(multiplier ^ 239) & 63];
+
+	for (multiplier = 0, index = 0; (char)index < argv[1][0]; index++)
+		multiplier = rand();
+	key[5] = l[(multiplier ^ 229) & 63];
+
+	printf("%s\n", key);
 	return (0);
 }
