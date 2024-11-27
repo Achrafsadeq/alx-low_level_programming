@@ -1,23 +1,25 @@
+# Compiler and flags
 CC = gcc
+CFLAGS = -Wall -Werror -Wextra -pedantic
+
+# Source and object files
 SRC = main.c school.c
 OBJ = $(SRC:.c=.o)
+
+# Executable name
 NAME = school
-CFLAGS = -Wall -Werror -Wextra -pedantic
 
 .PHONY: all clean oclean fclean re
 
 all: m.h $(OBJ)
 	$(CC) $(OBJ) -o $(NAME)
 
-$(OBJ): m.h
-
 clean:
-	rm -f *~
+	$(RM) *~ $(NAME)
 
 oclean:
-	rm -f $(OBJ)
+	$(RM) $(OBJ)
 
 fclean: clean oclean
-	rm -f $(NAME)
 
 re: fclean all
